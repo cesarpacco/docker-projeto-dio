@@ -1,9 +1,41 @@
-version: '3.8'
+version: "3.8"
+
 services:
   apache:
     image: httpd:latest
     container_name: my-apache-app
     ports:
-    - '80:80'
+      - '80:80'
     volumes:
-    - ./website:/usr/local/apache2/htdocs
+      - ./website:/usr/local/apache2/htdocs
+    networks:
+      - minha-rede
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "Senha123"
+      MYSQL_DATABASE: "testedb"
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/mysql-C:/var/lib/mysql
+
+    networks:
+      - minha-rede
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      MYSQL_ROOT_PASSWORD: "Senha123"
+    ports:
+      - "8080:80"
+    volumes:
+      - ./website/php/admin/uploads.ini:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+
+    networks:
+      - minha-rede
+
+networks:
+   minha-rede:
+     driver: bridge
